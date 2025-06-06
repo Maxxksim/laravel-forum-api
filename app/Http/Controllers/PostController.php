@@ -8,6 +8,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -15,7 +16,7 @@ class PostController extends Controller
 {
 
 
-    public function index(Request $request): Response
+    public function index(Request $request): JsonResponse
     {
 
         $validated = $request->validate([
@@ -24,15 +25,15 @@ class PostController extends Controller
 
         if (isset($validated['user_id'])) {
 
-            return response(User::find($validated['user_id'])->posts()->paginate(10)->toResourceCollection(), Response::HTTP_OK);
+            return response()->json(User::find($validated['user_id'])->posts()->paginate(10)->toResourceCollection(), Response::HTTP_OK);
         }
 
-        return response(Post::paginate(10)->toResourceCollection(), Response::HTTP_OK);
+        return response()->json(Post::paginate(10)->toResourceCollection(), Response::HTTP_OK);
 
     }
 
 
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request): JsonResponse
     {
 
         $name_image = Post::generateNameImage($request->file('image')->getClientOriginalExtension());
@@ -48,16 +49,16 @@ class PostController extends Controller
 
         $request->file('image')->storePubliclyAs('post_images/', $name_image, 'public');
 
-        return response(['message' => 'Post was created successfully.'], Response::HTTP_CREATED);
+        return response()->json(['message' => 'Post was created successfully.'], Response::HTTP_CREATED);
 
     }
 
-    public function show(Post $post)
+    public function show(Post $post): JsonResponse
     {
-        return response($post->toResource(), Response::HTTP_OK);
+        return response()->json($post->toResource(), Response::HTTP_OK);
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post): Response
     {
 
         if (auth()->user()->cannot('update', $post)) {
@@ -66,18 +67,18 @@ class PostController extends Controller
 
         $post->update($request->validated());
 
-        return response(['message' => 'Post was updated successfully.'], Response::HTTP_OK);
+        return response()->json(['message' => 'Post was updated successfully.'], Response::HTTP_OK);
     }
 
-    public function destroy(Post $post)
+    public function destroy(Post $post): JsonResponse
     {
 
         if (auth()->user()->cannot('delete', $post)) {
-            return response(['message' => 'You can delete only your own post.'], Response::HTTP_FORBIDDEN);
+            return response()->json(['message' => 'You can delete only your own post.'], Response::HTTP_FORBIDDEN);
         }
 
         $post->delete();
 
-        return response('Post was deleted successfully.', Response::HTTP_OK);
+        return response()->json('Post was deleted successfully.', Response::HTTP_OK);
     }
 }

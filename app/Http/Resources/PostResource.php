@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,6 +20,7 @@ class PostResource extends JsonResource
             'author_last_name' => $this->author_last_name,
             'user_id' => $this->user_id,
             'likes' => $this->likes,
+            'comments' => $this->comments()->get()->toResourceCollection(),
             'created_at' => $this->created_at->format('Y-m-d H:i')
         ];
     }
