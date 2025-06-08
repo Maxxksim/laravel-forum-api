@@ -53,9 +53,13 @@ class PostController extends Controller
 
     }
 
-    public function show(Post $post): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        return response()->json($post->toResource(), Response::HTTP_OK);
+        if ($post = Post::where('id', $id)->first()) {
+            return response()->json($post->toResource(), Response::HTTP_OK);
+        }
+
+        return response()->json(['message' => 'Post not found'], Response::HTTP_NOT_FOUND);
     }
 
     public function update(UpdatePostRequest $request, Post $post): Response
