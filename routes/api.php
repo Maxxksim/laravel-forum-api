@@ -15,7 +15,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('posts', PostController::class)->withoutMiddlewareFor(['index', 'show'], 'auth:sanctum');
     Route::apiResource('comments', CommentController::class)->withoutMiddlewareFor(['index'], 'auth:sanctum');
-    Route::apiResource('users', UserController::class);
+    Route::apiResource('users', UserController::class)->withoutMiddlewareFor(['show'], 'auth:sanctum');
 
     Route::controller(LikeController::class)->group(function () {
         Route::post('/like/{post}', 'toLike');
