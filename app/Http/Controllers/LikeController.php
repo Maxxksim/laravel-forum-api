@@ -27,7 +27,7 @@ class LikeController extends Controller
         return response()->json(['message' => 'Liked'], Response::HTTP_CREATED);
     }
 
-    public function toUnlike(Post $post): Response
+    public function toUnlike(Post $post): JsonResponse
     {
         if ($post->isLiked()) {
 
