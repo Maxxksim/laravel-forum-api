@@ -1,1 +1,1 @@
-REST API
+Laravel forum API
